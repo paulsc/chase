@@ -7,6 +7,18 @@ import chase
 from budget import days_until_pay, estimated_spending
 from ConfigParser import SafeConfigParser
 
+
+now = datetime.now()
+weekday = now.weekday()
+is_weekend = (weekday == 5 or weekday == 6)
+STOPTIME = 23
+STARTTIME = 12 if is_weekend else 8
+
+hour = now.time().hour
+if hour > STOPTIME or hour < STARTTIME:
+    print(str(now) + ' - offline')
+    exit(0)
+
 parser = SafeConfigParser()
 parser.read('config.ini')
  
@@ -29,7 +41,6 @@ f = open('last', 'r')
 last = int(f.readline())
 f.close()
 
-now = datetime.now()
 if check_avail != last:
     from twilio.rest import TwilioRestClient
     account = parser.get('twilio', 'account')
